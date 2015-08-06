@@ -1,11 +1,17 @@
 package in.teachcoder.app.musicplayerdemo;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +25,14 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<File> songsPlayList;
 
     String[] nameofSongs;
+    static MediaPlayer iPod = new MediaPlayer();
+    static MediaPlayer iPod2 = new MediaPlayer();
+    ArrayList<File> allSongs;
+    private Button play;
+    private Button back;
+    private Button forward;
+    LinearLayout buttonLayoutRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         //1.Get the file Path
         File pathToStorage = Environment.getExternalStorageDirectory();
         File internalPath = getFilesDir();
-        ArrayList<File> allSongs = searchDirectory(pathToStorage);
+         allSongs = searchDirectory(pathToStorage);
 
         nameofSongs = new String[allSongs.size()];
 
@@ -42,6 +56,57 @@ public class MainActivity extends AppCompatActivity {
 
         lv.setAdapter(adapter);
 
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+                Uri u = Uri.fromFile(allSongs.get(i));
+
+                Toast.makeText(MainActivity.this, "Songs CLicked " + u.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+
+                iPod = MediaPlayer.create(MainActivity.this, u);
+                iPod.start();
+
+
+
+
+            }
+        });
+
+        play = (Button) findViewById(R.id.pp);
+        back = (Button) findViewById(R.id.back);
+        forward = (Button) findViewById(R.id.forward);
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(iPod.isPlaying()){
+                    iPod.pause();
+                    play.setText("||");
+                }
+                else{
+                    Uri x = Uri.fromFile(allSongs.get(0));
+                    iPod = MediaPlayer.create(MainActivity.this, x);
+                    iPod.start();
+                    play.setText(">");
+                }
+//                else{
+//
+//                    play.setText(">");
+//                }
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iPod.stop();
+                iPod.release();
+
+
+            }
+        });
 
         if (allSongs.size()>0){
             Toast.makeText(this,"Songs added",Toast.LENGTH_SHORT).show();
@@ -97,4 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
