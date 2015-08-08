@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private Button forward;
     LinearLayout buttonLayoutRef;
 
+    private static int currentSong = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
                 iPod = MediaPlayer.create(MainActivity.this, u);
                 iPod.start();
-
-
+                MainActivity.currentSong = i;
 
 
             }
@@ -86,10 +87,11 @@ public class MainActivity extends AppCompatActivity {
                     play.setText("||");
                 }
                 else{
-                    Uri x = Uri.fromFile(allSongs.get(0));
-                    iPod = MediaPlayer.create(MainActivity.this, x);
-                    iPod.start();
+//                    Uri x = Uri.fromFile(allSongs.get(0));
+//                    iPod = MediaPlayer.create(MainActivity.this, x);
+//                    iPod.start();
                     play.setText(">");
+                    iPod.start();
                 }
 //                else{
 //
@@ -104,9 +106,45 @@ public class MainActivity extends AppCompatActivity {
                 iPod.stop();
                 iPod.release();
 
+                currentSong = currentSong-1;
+
+                if (currentSong == -1){
+                    currentSong = allSongs.size()-1;
+                }
+
+                Uri uri = Uri.fromFile(allSongs.get(currentSong));
+                iPod = MediaPlayer.create(MainActivity.this,uri);
+                iPod.start();
+
+                Toast.makeText(MainActivity.this, "Previous song "+ uri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+
 
             }
         });
+
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                 currentSong = currentSong + 1;
+                if(allSongs.size() == currentSong){
+                    currentSong = 0;
+                }
+
+                Uri uri = Uri.fromFile(allSongs.get(currentSong));
+
+                iPod.stop();
+                iPod.release();
+
+                iPod = MediaPlayer.create(MainActivity.this, uri);
+                iPod.start();
+                Toast.makeText(MainActivity.this,"Next Song"+uri.getLastPathSegment(),Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+
+
 
         if (allSongs.size()>0){
             Toast.makeText(this,"Songs added",Toast.LENGTH_SHORT).show();
