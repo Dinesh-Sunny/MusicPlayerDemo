@@ -34,7 +34,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="&gt;"
+            android:text="||"
             android:id="@+id/pp"
             android:layout_weight="1"/>
 

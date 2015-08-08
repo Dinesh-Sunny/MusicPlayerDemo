@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-
+                iPod.stop();
+                iPod.release();
                 Uri u = Uri.fromFile(allSongs.get(i));
 
                 Toast.makeText(MainActivity.this, "Songs CLicked " + u.getLastPathSegment(), Toast.LENGTH_SHORT).show();
@@ -70,6 +71,16 @@ public class MainActivity extends AppCompatActivity {
                 iPod = MediaPlayer.create(MainActivity.this, u);
                 iPod.start();
                 MainActivity.currentSong = i;
+
+                if(iPod.isPlaying()){
+
+                    play.setText("||");
+                }
+                else{
+
+                    play.setText(">");
+
+                }
 
 
             }
@@ -118,6 +129,15 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(MainActivity.this, "Previous song "+ uri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
 
+                if(!iPod.isPlaying()){
+
+                    play.setText("||");
+                }
+                else{
+
+                    play.setText(">");
+
+                }
 
             }
         });
